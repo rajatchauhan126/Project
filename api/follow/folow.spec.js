@@ -3,8 +3,6 @@ require('chai').should();
 
 const app = require('../../app');
 
-require('chai').should();
-
 const request = require('supertest');
 
 const circleDAO = require('../../dao/circle');

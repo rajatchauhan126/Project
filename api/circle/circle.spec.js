@@ -3,10 +3,8 @@ require('chai').should();
 const app = require('../../app');
 
 const expect = require('chai').expect;
-require('chai').should();
 
 const request = require('supertest');
-
 
 const circleDAO = require('../../dao/circle');
 const mailboxDAO= require('../../dao/mailbox/');

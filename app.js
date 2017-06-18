@@ -1,4 +1,4 @@
-//require('./api/push');
+// require('./api/push');
 
 const express = require('express');
 
@@ -17,13 +17,10 @@ const server = require('http').Server(app);
 
 const io = require('socket.io')(server);
 
-const socket = io.listen(server);
-
-//push(socket);
-
-//module.exports = {server,socket};
-// CHANGEME: URI should be same as circle's. Follow the example of lines 11-12
-app.use('/publish', require('./api/publish'));
+//  const socket = io.listen(server);
+//  push(socket);
+//  module.exports = {server,socket};
+//  CHANGEME: URI should be same as circle's. Follow the example of lines 11-12
 
 app.use('/circle', require('./api/activity'));
 

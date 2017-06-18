@@ -2,47 +2,43 @@ const followDao = require('../follow');
 
 const listeners = { };
 
-const activities = { }; 
+const activities = { };
 
-function publishToMailbox(mid, activity) {
-  activities[mid].shift(activities);
-  listeners[mid].forEach(function(socket) {
-    socket.emit('new activity', activity);
+function publishActivityToMailbox(mid, activity) {
+  let counter=0;
+  if (!activities[mid]) { activities[mid] = []; }
+  activities[mid].unshift(activity);
+  publishActivityToListeners(mid, activity);
+}
+
+function publishActivityToListeners(mid, activity) {
+  if(!listeners.hasOwnProperty(mid)) { return; }
+  listeners[mid].forEach((socket) => {
+    socket.emit('newActivity', activity);
   });
 }
 
-function retriveMessageFromMailbox(mid){
+function retriveActivitiesFromMailbox(mid) {
   return activities[mid];
 }
 
 function addListnerToMailbox(mid, socket) {
-  socket.on('startListeningToMailBox',function(data){
-    listeners[mid].push(socket);
-  });
-
-  socket.on('stopListeningToMailbox', function(data){
-    const index=listeners[mid].indexOf(socket);
-    listeners[mid].splice(index,1);
-  });
+  if (!listeners[mid]) { listeners[mid] = []; }
+  if(listeners[mid].indexOf(socket) > -1) { return; }
+  listeners[mid].push(socket);
+  console.log('listeners:', listeners[mid].length);
 }
 
-function createPublishActivity(newActivity) {
-  publishActivityMailbox.push(newActivity);
-  followArr = followDao.splitMailId(newActivity.receiver);
-  sendToCircleMailbox(followArr, newActivity);
-  return newActivity;
-}
-
-function checkIfActivityPublished(mailboxId) {
-  const filterMailBox = publishActivityMailbox.filter(userid => userid.receiver === mailboxId);
-
-  return filterMailBox.length !== 0;
+function removeListnerFromMailbox(mid, socket) {
+  if(!listeners.hasOwnProperty(mid)) { return; }
+  const index=listeners[mid].indexOf(socket);
+  listeners[mid].splice(index, 1);
+  console.log('');
 }
 
 module.exports = {
-  publishToMailbox,
+  publishActivityToMailbox,
+  retriveActivitiesFromMailbox,
   addListnerToMailbox,
-  addListnerToMailbox,
-  createPublishActivity,
-  checkIfActivityPublished,
+  removeListnerFromMailbox,
 };
