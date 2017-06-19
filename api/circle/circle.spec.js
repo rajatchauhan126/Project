@@ -9,7 +9,7 @@ const should = require('chai').should();
 const request = require('supertest');
 
 
-const circleDAO = require('../../dao/circle');
+const circleDAO = require('../../dao_mock/circle');
 
 describe('/circle api', () => {
   // const circleId = '1629d450-5279-11e7-a845-d9c5443eaaa0';

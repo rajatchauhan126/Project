@@ -3,7 +3,7 @@ const app = require('../../app');
 const expect = require('chai').expect;
 const request = require('supertest');
 
-const mailboxDao = require('../../dao/mailbox/');
+const mailboxDao = require('../../dao_mock/mailbox/');
 
 
 describe('/mailbox api', () => {
@@ -45,6 +45,7 @@ describe('/mailbox api', () => {
 
   it('should return an error when we try to delete a mailbox that does not exist', (done) => {
     request(app)
+
       .delete(`/mailbox/${mailboxId}`)
       .expect(404)
       .expect('Content-Type', /json/)
