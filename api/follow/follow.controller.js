@@ -7,7 +7,7 @@ function follow(req, res) {
   const { circleId, mailboxId } = req.params;
   let isMailboxExists = true;
   let isCircleExists = true;
-  const isFollowExists = true;
+  let isFollowExists = true;
   mailboxDAO.checkIfMailboxExists(mailboxId, (err, doesMailboxExists) => {
     if (err) { res.status(404).json(err); return; }
     isMailboxExists=doesMailboxExists;
@@ -16,7 +16,7 @@ function follow(req, res) {
       isCircleExists=doesCircleExists;
       followDAO.checkIfFollowExists({ circleId, mailboxId }, (err2, isExists) => {
         if (err2) { res.status(404).json(err2); return; }
-        isMailboxExists=isExists;
+        isFollowExists=isExists;
         if (!isMailboxExists) {
           res.status(404).json({ message: `Mailbox with id ${mailboxId} does not exist` });
           return;

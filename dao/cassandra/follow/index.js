@@ -5,8 +5,8 @@ const uuid = start.uuid;
 
 function addFollow(follower, callback) {
   const id1 = uuid();
-  const query = ('INSERT INTO circle (id, circleid, mailboxid ) values( ?, ?, ? )');
-  client.execute(query, id1, follower.circleId, follower.mailboxId, (err, result) => {
+  const query = ('INSERT INTO follow (id, circleid, mailboxid ) values( ?, ?, ? )');
+  client.execute(query, [id1, follower.circleId, follower.mailboxId], (err, result) => {
     if (err) { throw err; }
     return callback(err, follower);
   });
@@ -29,7 +29,7 @@ function deleteFollow(follower, callback) {
       return callback(null, `Mailbox with id ${follower.mailboxId} 
     is not following Circle with id ${follower.circleId}`);
     }
-    const query =(`DELETE from circle where circleid =${follower.circleId} 
+    const query =(`DELETE from follow where circleid =${follower.circleId} 
     AND mailboxid=${follower.mailboxId} ALLOW FILTERING`);
     client.execute(query, (error, result) => callback(err, { follower }));
     return true;

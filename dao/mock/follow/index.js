@@ -7,6 +7,7 @@ function addFollow(follower) {
 
 function checkIfFollowExists(follower) {
   const filterData = follow => follow.circleId === follower.circleId && follow.mailboxId === follower.mailboxId;
+  console.log(follower.circleId);
   const filteredFollowers = followapi.filter(filterData);
   return filteredFollowers.length !== 0;
 }
