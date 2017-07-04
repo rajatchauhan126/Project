@@ -7,7 +7,7 @@ require('chai').should();
 
 const request = require('supertest');
 
-const start=require('../../db');
+const start = require('../../db');
 
 const circleDAO = require('../../dao').circle;
 
@@ -22,6 +22,7 @@ const authorize = require('../../authorize');
 describe('/follow api', function () {
   let circleId;
   let mailboxId;
+  const mailboxsId = [];
   let token;
   before(function (done) {
     circleDAO.createCircle((err, result) => {
@@ -30,6 +31,14 @@ describe('/follow api', function () {
     mailboxDAO.createMailbox((err, result) => {
       mailboxId = result.id;
     });
+    for (let i = 1; i <= 2; i += 1) {
+      mailboxDAO.createMailbox((err, result) => {
+        // console.log(result.id);
+        mailboxsId.push(result.id);
+      });
+    }
+    console.log(`mailboxsID${mailboxsId}`);
+
     token = authorize.generateJWTToken();
     setTimeout(() => {
       done();
@@ -62,8 +71,38 @@ describe('/follow api', function () {
     });
   });
 
+  it('should bulk add if circle id, mailbox id exist and follower does not exist', function (done) {
+    circleDAO.checkIfCircleExists(circleId, (err1, doesCircleExists) => {
+      doesCircleExists.should.be.equal(true);
+      mailboxsId.forEach((box) => {
+        mailboxDAO.checkIfMailboxExists(mailboxsId, (err, doesMailboxExists) => {
+          doesMailboxExists.should.be.equal(false);
+          followDAO.checkIfFollowExists({ circleId, box }, (err2, doesFollowExistsBefore) => {
+            doesFollowExistsBefore.should.be.equal(false);
+          });
+        });
+      });
+    });
+    request(app)
+      .post(`/mailbox/bulkmailbox/${circleId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({ mailbox: mailboxsId })
+      .expect(201)
+      .expect('Content-Type', /json/)
+      .end(function (err4, res) {
+        if (err4) { done(err4); return; }
+        mailboxsId.forEach((box) => {
+          followDAO.checkIfFollowExists({ circleId, box }, (err3, follow) => {
+            console.log(`follow${follow}`);
+            follow.should.be.equal(true);
+            done();
+          });
+        });
+      });
+  });
+
   it('should fail to add follow if circle does not exist, but mailbox exists', function (done) {
-    const randomCircleId=uuid();
+    const randomCircleId = uuid();
     mailboxDAO.checkIfMailboxExists(mailboxId, (err, doesMailboxExists) => {
       doesMailboxExists.should.be.equal(true);
       circleDAO.checkIfCircleExists(randomCircleId, (err1, doesCircleExists) => {
@@ -90,7 +129,7 @@ describe('/follow api', function () {
   });
 
   it('should fail to add follow if mailbox id does not exist, but circle exists', function (done) {
-    const randomMailboxId=uuid();
+    const randomMailboxId = uuid();
     mailboxDAO.checkIfMailboxExists(randomMailboxId, (err, doesMailboxExists) => {
       doesMailboxExists.should.be.equal(false);
       circleDAO.checkIfCircleExists(circleId, (err1, doesCircleExists) => {
@@ -117,8 +156,8 @@ describe('/follow api', function () {
   });
 
   it('should fail to add follow if circle id and mailbox id do not exist', function (done) {
-    const randomCircleId=uuid();
-    const randomMailboxId=uuid();
+    const randomCircleId = uuid();
+    const randomMailboxId = uuid();
     mailboxDAO.checkIfMailboxExists(randomMailboxId, (err, doesMailboxExists) => {
       doesMailboxExists.should.be.equal(false);
       circleDAO.checkIfCircleExists(randomCircleId, (err1, doesCircleExists) => {
@@ -224,7 +263,7 @@ describe('/follow api', function () {
   });
 
   it('should fail to delete follower if circle id does not exist, but mailbox exists', function (done) {
-    const randomCircleId=uuid();
+    const randomCircleId = uuid();
     mailboxDAO.checkIfMailboxExists(mailboxId, (err, doesMailboxExists) => {
       doesMailboxExists.should.be.equal(true);
       circleDAO.checkIfCircleExists(randomCircleId, (err1, doesCircleExists) => {
@@ -251,7 +290,7 @@ describe('/follow api', function () {
   });
 
   it('should fail to delete follower if mailbox id does not exist, but circle exists', function (done) {
-    const randomMailboxId=uuid();
+    const randomMailboxId = uuid();
     mailboxDAO.checkIfMailboxExists(randomMailboxId, (err, doesMailboxExists) => {
       doesMailboxExists.should.be.equal(false);
       circleDAO.checkIfCircleExists(circleId, (err1, doesCircleExists) => {
@@ -278,8 +317,8 @@ describe('/follow api', function () {
   });
 
   it('should fail to delete follower if circle id and mailbox id do not exist', function (done) {
-    const randomCircleId=uuid();
-    const randomMailboxId=uuid();
+    const randomCircleId = uuid();
+    const randomMailboxId = uuid();
     mailboxDAO.checkIfMailboxExists(randomMailboxId, (err, doesMailboxExists) => {
       doesMailboxExists.should.be.equal(false);
       circleDAO.checkIfCircleExists(randomCircleId, (err1, doesCircleExists) => {

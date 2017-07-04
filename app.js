@@ -21,6 +21,9 @@ app.use('/mailbox', authorize.verifyToken, require('./api/mailbox'));
 /** Follow URI is for /mailbox/:mailboxId/circle/:circleId */
 app.use('/mailbox/', authorize.verifyToken, require('./api/follow'));
 
+// To add bulk mailboxes
+app.use('/circle', authorize.verifyToken, require('./api/follow'));
+
 // Publish activity to mailbox
 app.use('/mailbox', authorize.verifyToken, require('./api/activity'));
 

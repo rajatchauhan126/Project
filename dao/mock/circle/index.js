@@ -13,7 +13,7 @@ function createCircle(callback) {
   const newCircle = {
     id: uuid().toString(),
     mailboxid: circleMailbox,
-    createdOn: Date.now(),
+    createdOn: new Date(),
     lastActivity: Date.now(),
   };
   circles.push(newCircle);
