@@ -11,6 +11,12 @@
       description: "API to Publish Activity" 
     - name: "Receive Notification"
       description: "API to receive the notification"
+    - name: "Bulk API"
+      description: "API to receive the notification"
+    - name: "L1R Routes API"
+      description: "API to add,remove,list routes"
+    - name: "Multiplexer Routes API"
+      description: "API to add,remove,list routes"
   info: 
     title: "Calvin - Activity Log"
     version: "v1"
@@ -248,3 +254,252 @@
           description: "Authentication key"
           required: false
           type: "string"
+    /mailboxesopen/{offset}/{count}:
+       get:
+        tags:
+          - "Bulk API"
+        summary: "Gets the mailboxes which are open"
+        produces:
+          - "application/json"
+        responses:
+          200:
+            description: Get the mailboxes which are open.
+        parameters:
+        - name: "offset"
+          in: "path"
+          description: "offset value"
+          required: true
+          type: "string"
+          format: "int64"
+        - name: "count"
+          in: "path"
+          description: "count"
+          required: true
+          type: "string"
+          format: "int64"
+    /getallcircles/{offset}/{count}:
+       get:
+        tags:
+          - "Bulk API"
+        summary: "Get all the circles"
+        produces:
+          - "application/json"
+        responses:
+          200:
+            description: Get all the circles.
+        parameters:
+        - name: "offset"
+          in: "path"
+          description: "offset value"
+          required: true
+          type: "string"
+          format: "int64"
+        - name: "count"
+          in: "path"
+          description: "count"
+          required: true
+          type: "string"
+          format: "int64"
+    /getfollowers/{circleid}/{offset}/{count}:
+       get:
+        tags:
+          - "Bulk API"
+        summary: "Get all the followers"
+        produces:
+          - "application/json"
+        responses:
+          200:
+            description: Get all the followers.
+        parameters:
+        - name: "circleid"
+          in: "path"
+          description: "circleId"
+          required: true
+          type: "string"
+          format: "int64"
+        - name: "offset"
+          in: "path"
+          description: "offset value"
+          required: true
+          type: "string"
+          format: "int64"
+        - name: "count"
+          in: "path"
+          description: "count"
+          required: true
+          type: "string"
+          format: "int64"
+    /l1route/{circleId}/{multiplexerId}:
+       post:
+        tags:
+          - "L1R routes API"
+        summary: "API to add route"
+        produces: 
+          - "application/json"
+        responses: 
+          201: 
+            description: Add route. 
+        parameters:
+        - name: "circleId"
+          in: "path"
+          description: "circle Id to add route"
+          required: true
+          type: "string"
+          format: "int64"
+        - name: "multiplexerId"
+          in: "path"
+          description: "multiplexer Id to add route"
+          required: true
+          type: "string"
+          format: "int64"
+       delete:
+        tags:
+          - "L1R routes API"
+        summary: "API to delete route"
+        produces: 
+          - "application/json"
+        responses: 
+          201: 
+            description: Delete route. 
+        parameters:
+        - name: "circleId"
+          in: "path"
+          description: "circle Id to delete route"
+          required: true
+          type: "string"
+          format: "int64"
+        - name: "multiplexerId"
+          in: "path"
+          description: "multiplexer Id to delete route"
+          required: true
+          type: "string"
+          format: "int64"
+    /l1route/{circleId}:
+       get:
+        tags:
+          - "L1R routes API"
+        summary: "Get routes for circle"
+        produces:
+          - "application/json"
+        responses:
+          200:
+            description: Get routes for circle.
+        parameters:
+        - name: "circleId"
+          in: "path"
+          description: "circleId to get routes"
+          required: true
+          type: "string"
+          format: "int64"
+    /l1route:
+       get:
+        tags:
+          - "L1R routes API"
+        summary: "Get list of routes"
+        produces:
+          - "application/json"
+        responses:
+          200:
+            description: Get list of routes.
+    /multiplexer_route/{namespace}/{circleId}/{mailboxId}:
+       post:
+        tags:
+          - "multiplexer routes API"
+        summary: "API to add route"
+        produces: 
+          - "application/json"
+        responses: 
+          201: 
+            description: Routes added. 
+        parameters:
+        - name: "namespace"
+          in: "path"
+          description: "multiplexer Id to add route"
+          required: true
+          type: "string"
+          format: "int64"
+        - name: "circleId"
+          in: "path"
+          description: "circle Id to add route"
+          required: true
+          type: "string"
+          format: "int64"
+        - name: "mailboxId"
+          in: "path"
+          description: "mailbox Id to add route"
+          required: true
+          type: "string"
+          format: "int64"
+       delete:
+        tags:
+          - "multiplexer routes API"
+        summary: "API to delete route"
+        produces: 
+          - "application/json"
+        responses: 
+          201: 
+            description: Routes deleted. 
+        parameters:
+        - name: "namespace"
+          in: "path"
+          description: "multiplexer Id to delete route"
+          required: true
+          type: "string"
+          format: "int64"
+        - name: "circleId"
+          in: "path"
+          description: "circle Id to delete route"
+          required: true
+          type: "string"
+          format: "int64"
+        - name: "mailboxId"
+          in: "path"
+          description: "mailbox Id to delete route"
+          required: true
+          type: "string"
+          format: "int64"
+    /multiplexer_route/{namespace}/{circleId}:
+       get:
+        tags:
+          - "multiplexer routes API"
+        summary: "Get routes for circle"
+        produces:
+          - "application/json"
+        responses:
+          200:
+            description: Get routes for circle.
+        parameters:
+        - name: "namespace"
+          in: "path"
+          description: "multiplexerId to get routes"
+          required: true
+          type: "string"
+          format: "int64"
+        - name: "circleId"
+          in: "path"
+          description: "circleId to get routes"
+          required: true
+          type: "string"
+          format: "int64"
+    /multiplexer_route/{namespace}:
+       get:
+        tags:
+          - "multiplexer routes API"
+        summary: "Get list of routes"
+        produces:
+          - "application/json"
+        responses:
+          200:
+            description: Get list of routes.
+        parameters:
+        - name: "namespace"
+          in: "path"
+          description: "multiplexerId to get routes"
+          required: true
+          type: "string"
+          format: "int64"
+       
+
+
+               
+
